@@ -1,0 +1,4 @@
+*.retry
+.kube
+.vagrant
+kubernetes-setup/join-command
