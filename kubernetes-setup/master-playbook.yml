@@ -98,12 +98,6 @@
      - cp -i /etc/kubernetes/admin.conf /home/vagrant/.kube/config
      - chown vagrant:vagrant /home/vagrant/.kube/config
 
-  - name: Copy kubeconfig to shared folder
-    command: "{{ item }}"
-    with_items:
-     - mkdir -p /vagrant/.kube
-     - cp -i /etc/kubernetes/admin.conf /vagrant/.kube/config
-
   - name: Install calico pod network
     become: false
     command: kubectl create -f https://docs.projectcalico.org/manifests/calico.yaml
@@ -115,13 +109,14 @@
   - name: Copy join command to local file
     local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="./join-command"
 
-  - name: Wait for port 8080
-    wait_for:
-      host: 192.168.50.10
-      port: 6443
-      timeout: 120
+  - name: Copy Kubernetes config to shared folder
+    command: "{{ item }}"
+    with_items:
+     - mkdir -p /vagrant/.kube
+     - cp /etc/kubernetes/admin.conf /vagrant/.kube/config
 
   - name: Allow master to run pods
+    become: false
     command: kubectl taint nodes --all node-role.kubernetes.io/master-
 
   handlers:

@@ -5,8 +5,6 @@ N = 2
 
 Vagrant.configure("2") do |config|
 
-  config.vbguest.auto_update = false
-
   config.vm.provider "virtualbox" do |v|
     v.memory = 8000
     v.cpus = 2
